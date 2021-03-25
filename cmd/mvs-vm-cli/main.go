@@ -28,7 +28,7 @@ import (
 	"github.com/gochain/gochain/v3/crypto"
 	"github.com/gochain/web3"
 	"github.com/gochain/web3/assets"
-	"github.com/shopspring/decimal"
+//	"github.com/shopspring/decimal"
 	"github.com/treeder/gotils"
 	"github.com/urfave/cli"
 )
@@ -49,7 +49,7 @@ const (
 	addrVarName        = "WEB3_ADDRESS"
 	networkVarName     = "WEB3_NETWORK"
 	rpcURLVarName      = "WEB3_RPC_URL"
-	didRegistryVarName = "WEB3_DID_REGISTRY"
+	//didRegistryVarName = "WEB3_DID_REGISTRY"
 )
 
 func main() {
@@ -65,17 +65,20 @@ func main() {
 	}()
 
 	// Flags
-	var netName, rpcUrl, function, contractAddress, toContractAddress, contractFile, privateKey, txFormat, txInputFormat string
-	var testnet, waitForReceipt, upgradeable bool
+	var netName, rpcUrl, 	contractAddress,contractFile, privateKey, txFormat, txInputFormat string
+	
+	//var function, toContractAddress string
+	var testnet, waitForReceipt bool
+	//var upgradeable bool
 
 	app := cli.NewApp()
-	app.Name = "web3"
+	app.Name = "mvs-vm-cli"
 	app.Version = Version
-	app.Usage = "web3 cli tool"
+	app.Usage = "Metaverse Hyperspace VM"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "network, n",
-			Usage:       `The name of the network. Options: gochain/testnet/ethereum/ropsten/localhost. (default: "gochain")`,
+			Usage:       `The name of the network. Options: hyperspace/testnet/localhost. (default: "hyperspace")`,
 			Destination: &netName,
 			EnvVar:      networkVarName,
 			Hidden:      false},
@@ -191,8 +194,8 @@ func main() {
 					Destination: &privateKey,
 					Hidden:      false},
 				cli.BoolFlag{
-					Name:   "erc20",
-					Usage:  "set if using erc20 tokens",
+					Name:   "MST",
+					Usage:  "set if using MST tokens",
 					Hidden: false},
 				cli.StringFlag{
 					Name:   "address",
@@ -206,7 +209,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				contractAddress = ""
-				if c.Bool("erc20") {
+				if c.Bool("MST") {
 					contractAddress = c.String("address")
 					if contractAddress == "" {
 						fatalExit(errors.New("You must set ERC20 contract address"))
@@ -215,6 +218,7 @@ func main() {
 				GetAddressDetails(ctx, network, c.Args().First(), privateKey, true, contractAddress, c.String("block"))
 			},
 		},
+		/*
 		{
 			Name:  "increasegas",
 			Usage: "Increase gas for a transaction. Useful if a tx is taking too long and you want it to go faster.",
@@ -633,6 +637,7 @@ func main() {
 				GetSnapshot(ctx, network.URL)
 			},
 		},
+		/*
 		{
 			Name:    "id",
 			Aliases: []string{"id"},
@@ -663,6 +668,7 @@ func main() {
 				return start(ctx, c)
 			},
 		},
+		*/
 		{
 			Name:  "myaddress",
 			Usage: fmt.Sprintf("Returns the address associated with %v", pkVarName),
@@ -736,7 +742,7 @@ func main() {
 		},
 		{
 			Name:    "transfer",
-			Usage:   fmt.Sprintf("Transfer GO/ETH or ERC20 tokens to another account. eg: `web3 transfer 10.1 to 0xADDRESS`"),
+			Usage:   fmt.Sprintf("Transfer ETP or MST tokens to another account. eg: `web3 transfer 10.1 to 0xADDRESS`"),
 			Aliases: []string{"send"},
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -747,13 +753,13 @@ func main() {
 					Hidden:      false,
 				},
 				cli.BoolFlag{
-					Name:   "erc20",
-					Usage:  "Set if transferring ERC20 tokens",
+					Name:   "MST",
+					Usage:  "Set if transferring MST tokens",
 					Hidden: false},
 				cli.StringFlag{
 					Name:   "address",
 					EnvVar: addrVarName,
-					Usage:  "Contract address if this is an ERC20",
+					Usage:  "Contract address if this is an MST",
 					Hidden: false},
 				cli.BoolFlag{
 					Name:        "wait",
@@ -780,10 +786,10 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				contractAddress = ""
-				if c.Bool("erc20") {
+				if c.Bool("MST") {
 					contractAddress = c.String("address")
 					if contractAddress == "" {
-						fatalExit(errors.New("You must set ERC20 contract address"))
+						fatalExit(errors.New("You must set MST contract address"))
 					}
 				}
 				price, limit := parseGasPriceAndLimit(c)
@@ -801,6 +807,7 @@ func main() {
 				}
 			},
 		},
+		/*
 		{
 			Name:    "generate",
 			Usage:   "Generate a contract",
@@ -1004,7 +1011,9 @@ func main() {
 				},
 			},
 		},
+		*/
 
+		/*
 		{
 			Name:  "claim",
 			Usage: "Verifiable claims operations",
@@ -1066,6 +1075,7 @@ func main() {
 				},
 			},
 		},
+		*/
 	}
 	err := app.Run(os.Args)
 	if err != nil {
@@ -1098,7 +1108,7 @@ func getNetwork(name, rpcURL string, testnet bool) web3.Network {
 			fatalExit(fmt.Errorf("Cannot set both rpcURL %q and testnet", rpcURL))
 		}
 		network.URL = rpcURL
-		network.Unit = "GO"
+		network.Unit = "ETP"
 	} else {
 		if testnet {
 			if name != "" {
@@ -1106,7 +1116,7 @@ func getNetwork(name, rpcURL string, testnet bool) web3.Network {
 			}
 			name = "testnet"
 		} else if name == "" {
-			name = "gochain"
+			name = "hyperspace"
 		}
 		var ok bool
 		network, ok = web3.Networks[name]
@@ -1207,7 +1217,7 @@ func GetBlockDetails(ctx context.Context, network web3.Network, numberOrHash str
 	fmt.Println("TxHash:", block.TxsRoot.String())
 	fmt.Println("ReceiptHash:", block.ReceiptsRoot.String())
 	fmt.Println("Bloom:", "0x"+common.Bytes2Hex(block.LogsBloom.Bytes()))
-	fmt.Println("MixDigest:", block.MixHash.String())
+//	fmt.Println("MixDigest:", block.MixHash.String())
 	if len(block.Signers) > 0 {
 		fmt.Println("Signers:", fmtAddresses(block.Signers).String())
 	}
@@ -1326,13 +1336,13 @@ func GetAddressDetails(ctx context.Context, network web3.Network, addrHash, priv
 	}
 
 	if contractAddress != "" {
-		decimals, err := GetContractConst(ctx, network.URL, contractAddress, "erc20", "decimals")
+		decimals, err := GetContractConst(ctx, network.URL, contractAddress, "MST", "decimals")
 		if err != nil {
 			fatalExit(err)
 		}
 		// fmt.Println("DECIMALS:", decimals, reflect.TypeOf(decimals))
 		// todo: could get symbol here to display
-		balance, err := GetContractConst(ctx, network.URL, contractAddress, "erc20", "balanceOf", addrHash)
+		balance, err := GetContractConst(ctx, network.URL, contractAddress, "MST", "balanceOf", addrHash)
 		if err != nil {
 			fatalExit(err)
 		}

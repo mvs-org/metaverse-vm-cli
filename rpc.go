@@ -98,14 +98,14 @@ func (r *rpcBlock) copyTo(b *Block) error {
 		return errors.New("missing 'extraData")
 	}
 	b.ExtraData = *r.ExtraData
-	if r.MixHash == nil {
-		return errors.New("missing 'mixHash'")
-	}
-	b.MixHash = *r.MixHash
-	if r.Nonce == nil {
-		return errors.New("missing 'nonce'")
-	}
-	b.Nonce = *r.Nonce
+	//if r.MixHash == nil {
+	//	return errors.New("missing 'mixHash'")
+//	}
+	//b.MixHash = *r.MixHash
+//	if r.Nonce == nil {
+//		return errors.New("missing 'nonce'")
+//	}
+//	b.Nonce = *r.Nonce
 	if r.Hash == nil {
 		return errors.New("missing 'hash'")
 	}

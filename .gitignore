@@ -38,3 +38,5 @@ bin/
 lib/
 
 secrets/
+
+./mvs-vm-cli
