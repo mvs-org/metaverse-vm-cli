@@ -34,23 +34,24 @@ GLOBAL OPTIONS:
 
 ## Quickstart
 
-If you just plan to read from the blockchain, you do not need any GO tokens and you do not need to set your `MVS_PRIVATE_KEY`. If you plan to deploy contracts or write anything to the blockchain, you'll need tokens and you'll need to set your `MVS_PRIVATE_KEY` for the account that has those tokens.
+If you just plan to read from the blockchain, you do not need any ETP and you do not need to set your `MVS_PRIVATE_KEY`. If you plan to deploy contracts or write anything to the blockchain, you'll need ETP and you'll need to set your `MVS_PRIVATE_KEY` for the account that has those tokens.
 
 ### Pick a network to use
 
-#### a) Run a local node
+#### a) Hyperspace mainnet
 
-Run this command to start a local node. It will print 10 addresses with keys upon starting that you can use to deploy and interact.
-
-```sh
-web3 start
-export MVS_NETWORK=localhost
-```
+By default the cli will connect to the hyperspace mainnet.
 
 #### b) Use the Andromeda testnet
 
 ```sh
 export MVS_NETWORK=testnet
+```
+
+#### c) Run a local node
+
+```sh
+export MVS_NETWORK=localhost
 ```
 
 ### Set Private Key (optional)
