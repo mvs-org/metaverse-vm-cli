@@ -45,11 +45,10 @@ const (
 ( (_-. )(_)(( (__  ) _ (  /(__)\  _)(_  )  ( 
  \___/(_____)\___)(_) (_)(__)(__)(____)(_)\_)`
 
-	pkVarName          = "WEB3_PRIVATE_KEY"
-	addrVarName        = "WEB3_ADDRESS"
-	networkVarName     = "WEB3_NETWORK"
-	rpcURLVarName      = "WEB3_RPC_URL"
-	//didRegistryVarName = "WEB3_DID_REGISTRY"
+	pkVarName          = "MVS_PRIVATE_KEY"
+	addrVarName        = "MVS_ADDRESS"
+	networkVarName     = "MVS_NETWORK"
+	rpcURLVarName      = "MVS_RPC_URL"
 )
 
 func main() {
@@ -547,7 +546,7 @@ func main() {
 						cli.StringFlag{
 							Name:        "private-key",
 							Usage:       "Private key",
-							EnvVar:      "WEB3_PRIVATE_KEY",
+							EnvVar:      "MVS_PRIVATE_KEY",
 							Destination: &privateKey,
 							Hidden:      false},
 					},
@@ -592,7 +591,7 @@ func main() {
 						cli.StringFlag{
 							Name:        "private-key",
 							Usage:       "Private key",
-							EnvVar:      "WEB3_PRIVATE_KEY",
+							EnvVar:      "MVS_PRIVATE_KEY",
 							Destination: &privateKey,
 							Hidden:      false},
 					},
@@ -622,7 +621,7 @@ func main() {
 						cli.StringFlag{
 							Name:        "private-key",
 							Usage:       "Private key",
-							EnvVar:      "WEB3_PRIVATE_KEY",
+							EnvVar:      "MVS_PRIVATE_KEY",
 							Destination: &privateKey,
 							Hidden:      false},
 					},

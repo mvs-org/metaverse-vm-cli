@@ -16,16 +16,16 @@ COMMANDS:
    receipt, rc      Transaction receipt for a tx hash
    address, addr    Account details for a specific address, or the one corresponding to the private key.
    balance          Get balance for your private key or an address passed in. eg: `balance 0xABC123`
-   myaddress        Returns the address associated with WEB3_PRIVATE_KEY
+   myaddress        Returns the address associated with MVS_PRIVATE_KEY
    account, a       Account operations
    transfer, send   Transfer ETP or MST tokens to another account. eg: `web3 transfer 10.1 to 0xADDRESS`
    env              List environment variables
    help, h          Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --network value, -n value  The name of the network. Options: hyperspace/testnet/localhost. (default: "hyperspace") [$WEB3_NETWORK]
+   --network value, -n value  The name of the network. Options: hyperspace/testnet/localhost. (default: "hyperspace") [$MVS_NETWORK]
    --testnet                  Shorthand for '-network testnet'.
-   --rpc-url value            The network RPC URL [$WEB3_RPC_URL]
+   --rpc-url value            The network RPC URL [$MVS_RPC_URL]
    --verbose                  Enable verbose logging
    --format value, -f value   Output format. Options: json. Default: human readable output.
    --help, -h                 show help
@@ -34,7 +34,7 @@ GLOBAL OPTIONS:
 
 ## Quickstart
 
-If you just plan to read from the blockchain, you do not need any GO tokens and you do not need to set your `WEB3_PRIVATE_KEY`. If you plan to deploy contracts or write anything to the blockchain, you'll need tokens and you'll need to set your `WEB3_PRIVATE_KEY` for the account that has those tokens.
+If you just plan to read from the blockchain, you do not need any GO tokens and you do not need to set your `MVS_PRIVATE_KEY`. If you plan to deploy contracts or write anything to the blockchain, you'll need tokens and you'll need to set your `MVS_PRIVATE_KEY` for the account that has those tokens.
 
 ### Pick a network to use
 
@@ -44,13 +44,13 @@ Run this command to start a local node. It will print 10 addresses with keys upo
 
 ```sh
 web3 start
-export WEB3_NETWORK=localhost
+export MVS_NETWORK=localhost
 ```
 
 #### b) Use the GoChain testnet
 
 ```sh
-export WEB3_NETWORK=testnet
+export MVS_NETWORK=testnet
 ```
 
 ### Set Private Key (optional)
@@ -58,7 +58,7 @@ export WEB3_NETWORK=testnet
 Required if you plan to deploy or write transactions.
 
 ```sh
-export WEB3_PRIVATE_KEY=0x...
+export MVS_PRIVATE_KEY=0x...
 ```
 
 #### Setting your private key
@@ -66,7 +66,7 @@ export WEB3_PRIVATE_KEY=0x...
 Set your private key in the environment so it can be used in all the commands below:
 
 ```sh
-export WEB3_PRIVATE_KEY=0xKEY
+export MVS_PRIVATE_KEY=0xKEY
 ```
 
 ### Check balance
