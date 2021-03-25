@@ -47,7 +47,7 @@ web3 start
 export MVS_NETWORK=localhost
 ```
 
-#### b) Use the GoChain testnet
+#### b) Use the Andromeda testnet
 
 ```sh
 export MVS_NETWORK=testnet
@@ -112,7 +112,7 @@ web3 transaction ADDRESS_HASH
 Clone this repo:
 
 ```sh
-git clone https://github.com/mvs-org/mvs-vm-cli
+git clone https://github.com/mvs-org/metaverse-vm-cli
 cd mvs-vm-cli
 make install
 # or just `make build` to build it into current directory
