@@ -28,6 +28,7 @@ var NotFoundErr = errors.New("not found")
 var (
 	weiPerGO   = big.NewInt(1e18)
 	weiPerGwei = big.NewInt(1e9)
+	weiPerSat = big.NewInt(1e10)
 )
 
 // Base converts b base units to wei (*1e18).
@@ -50,6 +51,10 @@ func WeiAsBase(w *big.Int) string {
 // WeiAsGwei converts w wei in to gwei, and formats it as a decimal fraction with full precision (up to 9 decimals).
 func WeiAsGwei(w *big.Int) string {
 	return new(big.Rat).SetFrac(w, weiPerGwei).FloatString(9)
+}
+
+func WeiAsSats(w *big.Int) string {
+	return new(big.Rat).SetFrac(w, weiPerSat).FloatString(10)
 }
 
 // IntAsFloat converts a *big.Int (ie: wei), to *big.Float (ie: ETH)

@@ -1296,7 +1296,7 @@ func GetTransactionDetails(ctx context.Context, network web3.Network, txhash, in
 	fmt.Println("Value:", web3.WeiAsBase(tx.Value), network.Unit)
 	fmt.Println("Nonce:", uint64(tx.Nonce))
 	fmt.Println("Gas Limit:", tx.GasLimit)
-	fmt.Println("Gas Price:", web3.WeiAsGwei(tx.GasPrice), "gwei")
+	fmt.Println("Gas Prices:", web3.WeiAsSats(tx.GasPrice), "sats")
 	if tx.BlockHash == (common.Hash{}) {
 		fmt.Println("Pending: true")
 	} else {
