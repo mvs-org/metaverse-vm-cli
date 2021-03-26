@@ -28,7 +28,8 @@ import (
 	"github.com/gochain/gochain/v3/crypto"
 	"github.com/gochain/web3"
 	"github.com/gochain/web3/assets"
-//	"github.com/shopspring/decimal"
+
+	//	"github.com/shopspring/decimal"
 	"github.com/treeder/gotils"
 	"github.com/urfave/cli"
 )
@@ -45,10 +46,10 @@ const (
 ( (_-. )(_)(( (__  ) _ (  /(__)\  _)(_  )  ( 
  \___/(_____)\___)(_) (_)(__)(__)(____)(_)\_)`
 
-	pkVarName          = "MVS_PRIVATE_KEY"
-	addrVarName        = "MVS_ADDRESS"
-	networkVarName     = "MVS_NETWORK"
-	rpcURLVarName      = "MVS_RPC_URL"
+	pkVarName      = "MVS_PRIVATE_KEY"
+	addrVarName    = "MVS_ADDRESS"
+	networkVarName = "MVS_NETWORK"
+	rpcURLVarName  = "MVS_RPC_URL"
 )
 
 func main() {
@@ -64,8 +65,8 @@ func main() {
 	}()
 
 	// Flags
-	var netName, rpcUrl, 	contractAddress,contractFile, privateKey, txFormat, txInputFormat string
-	
+	var netName, rpcUrl, contractAddress, contractFile, privateKey, txFormat, txInputFormat string
+
 	var function, toContractAddress string
 	var testnet, waitForReceipt bool
 	var upgradeable bool
@@ -218,96 +219,96 @@ func main() {
 			},
 		},
 		/*
-		{
-			Name:  "increasegas",
-			Usage: "Increase gas for a transaction. Useful if a tx is taking too long and you want it to go faster.",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:        "private-key, pk",
-					Usage:       "The private key",
-					EnvVar:      pkVarName,
-					Destination: &privateKey,
-					Required:    true},
-				cli.StringFlag{
-					Name:     "tx",
-					Usage:    "The transaction hash of the pending transaction.",
-					Required: true},
-				cli.IntFlag{
-					Name:  "amount",
-					Usage: "The amount in GWEI to increase the price. 1 would add 1 more GWEI. Decimal values allowed. (default: 1)",
-					Value: 1,
+			{
+				Name:  "increasegas",
+				Usage: "Increase gas for a transaction. Useful if a tx is taking too long and you want it to go faster.",
+				Flags: []cli.Flag{
+					cli.StringFlag{
+						Name:        "private-key, pk",
+						Usage:       "The private key",
+						EnvVar:      pkVarName,
+						Destination: &privateKey,
+						Required:    true},
+					cli.StringFlag{
+						Name:     "tx",
+						Usage:    "The transaction hash of the pending transaction.",
+						Required: true},
+					cli.IntFlag{
+						Name:  "amount",
+						Usage: "The amount in GWEI to increase the price. 1 would add 1 more GWEI. Decimal values allowed. (default: 1)",
+						Value: 1,
+					},
+				},
+				Action: func(c *cli.Context) {
+					IncreaseGas(ctx, privateKey, network, c.String("tx"), c.String("amount"))
 				},
 			},
-			Action: func(c *cli.Context) {
-				IncreaseGas(ctx, privateKey, network, c.String("tx"), c.String("amount"))
-			},
-		},
-		{
-			Name:  "replace",
-			Usage: "Replace transaction. If a transaction is still pending, you can attempt to replace it.",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:        "private-key, pk",
-					Usage:       "The private key",
-					EnvVar:      pkVarName,
-					Destination: &privateKey,
-					Required:    true},
-				cli.StringFlag{
-					Name:     "nonce",
-					Usage:    "The nonce to replace.",
-					Required: true},
-				cli.StringFlag{
-					Name:     "to",
-					Usage:    "to address",
-					Required: true,
+			{
+				Name:  "replace",
+				Usage: "Replace transaction. If a transaction is still pending, you can attempt to replace it.",
+				Flags: []cli.Flag{
+					cli.StringFlag{
+						Name:        "private-key, pk",
+						Usage:       "The private key",
+						EnvVar:      pkVarName,
+						Destination: &privateKey,
+						Required:    true},
+					cli.StringFlag{
+						Name:     "nonce",
+						Usage:    "The nonce to replace.",
+						Required: true},
+					cli.StringFlag{
+						Name:     "to",
+						Usage:    "to address",
+						Required: true,
+					},
+					cli.StringFlag{
+						Name:  "amountd", // adding a d for backwards compatibility. If d, then it's decimal, otherwise, the old stuff.
+						Usage: "The amount of GO or ETH in decimal format",
+					},
+					cli.Uint64Flag{
+						Name:  "gas-limit",
+						Usage: "Gas limit (multiplied by price for total gas)",
+						Value: 21000,
+					},
+					cli.StringFlag{
+						Name:  "gas-price",
+						Usage: "Gas price to use, if left blank, will use suggested gas price.",
+					},
+					cli.StringFlag{
+						Name:  "gas-price-gwei",
+						Usage: "Gas price to use in GWEI, if left blank, will use suggested gas price.",
+					},
+					cli.StringFlag{
+						Name:  "data",
+						Usage: "Data for smart contract call in hex (can copy from etherscan and other explorers)",
+					},
 				},
-				cli.StringFlag{
-					Name:  "amountd", // adding a d for backwards compatibility. If d, then it's decimal, otherwise, the old stuff.
-					Usage: "The amount of GO or ETH in decimal format",
-				},
-				cli.Uint64Flag{
-					Name:  "gas-limit",
-					Usage: "Gas limit (multiplied by price for total gas)",
-					Value: 21000,
-				},
-				cli.StringFlag{
-					Name:  "gas-price",
-					Usage: "Gas price to use, if left blank, will use suggested gas price.",
-				},
-				cli.StringFlag{
-					Name:  "gas-price-gwei",
-					Usage: "Gas price to use in GWEI, if left blank, will use suggested gas price.",
-				},
-				cli.StringFlag{
-					Name:  "data",
-					Usage: "Data for smart contract call in hex (can copy from etherscan and other explorers)",
-				},
-			},
-			Action: func(c *cli.Context) {
-				toS := c.String("to")
-				if toS == "" {
-					fatalExit(errors.New("to address not set"))
-				}
-				var amount *big.Int
-				ad := c.String("amountd")
-				if ad != "" {
-					amountd, err := decimal.NewFromString(ad)
+				Action: func(c *cli.Context) {
+					toS := c.String("to")
+					if toS == "" {
+						fatalExit(errors.New("to address not set"))
+					}
+					var amount *big.Int
+					ad := c.String("amountd")
+					if ad != "" {
+						amountd, err := decimal.NewFromString(ad)
+						if err != nil {
+							fatalExit(err)
+						}
+						amount = web3.DecToInt(amountd, 18)
+					} else {
+						amount = nil
+					}
+					price, limit := parseGasPriceAndLimit(c)
+					to := common.HexToAddress(toS)
+					dataB, err := hex.DecodeString(strings.TrimPrefix(c.String("data"), "0x"))
 					if err != nil {
 						fatalExit(err)
 					}
-					amount = web3.DecToInt(amountd, 18)
-				} else {
-					amount = nil
-				}
-				price, limit := parseGasPriceAndLimit(c)
-				to := common.HexToAddress(toS)
-				dataB, err := hex.DecodeString(strings.TrimPrefix(c.String("data"), "0x"))
-				if err != nil {
-					fatalExit(err)
-				}
-				ReplaceTx(ctx, privateKey, network, c.Uint64("nonce"), to, amount, price, limit, dataB)
+					ReplaceTx(ctx, privateKey, network, c.Uint64("nonce"), to, amount, price, limit, dataB)
+				},
 			},
-		},
 		*/
 		{
 			Name:    "contract",
@@ -315,19 +316,19 @@ func main() {
 			Usage:   "Contract operations",
 			Subcommands: []cli.Command{
 				/*
-				{
-					Name:  "flatten",
-					Usage: "Make the specified contract flat",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:  "output, o",
-							Usage: "The output file, by default it will add _flatten postfix",
+					{
+						Name:  "flatten",
+						Usage: "Make the specified contract flat",
+						Flags: []cli.Flag{
+							cli.StringFlag{
+								Name:  "output, o",
+								Usage: "The output file, by default it will add _flatten postfix",
+							},
+						},
+						Action: func(c *cli.Context) {
+							FlattenSol(ctx, c.Args().First(), c.String("output"))
 						},
 					},
-					Action: func(c *cli.Context) {
-						FlattenSol(ctx, c.Args().First(), c.String("output"))
-					},
-				},
 				*/
 				{
 					Name:  "build",
@@ -378,32 +379,32 @@ func main() {
 							EnvVar:      pkVarName,
 							Destination: &privateKey,
 							Hidden:      false},
-							/*
-						cli.BoolFlag{
-							Name:        "upgradeable",
-							Usage:       "Allow contract to be upgraded",
-							Destination: &upgradeable,
-							Hidden:      false},
-						cli.StringFlag{
-							Name:  "verify",
-							Usage: "Source code of the contract",
-						},
-						cli.StringFlag{
-							Name:  "explorer-api",
-							Usage: "Explorer API URL. Optional for GoChain networks, which use `{testnet-}explorer.gochain.io` by default",
-						},
-						cli.StringFlag{
-							Name:  "solc-version, c",
-							Usage: "The version of the solc compiler(a tag of the ethereum/solc docker image)",
-						}, cli.StringFlag{
-							Name:  "evm-version",
-							Usage: "Solidity EVM version",
-							Value: "petersburg",
-						},
-						cli.BoolTFlag{
-							Name:  "optimize",
-							Usage: "Solidity optimization",
-						},
+						/*
+							cli.BoolFlag{
+								Name:        "upgradeable",
+								Usage:       "Allow contract to be upgraded",
+								Destination: &upgradeable,
+								Hidden:      false},
+							cli.StringFlag{
+								Name:  "verify",
+								Usage: "Source code of the contract",
+							},
+							cli.StringFlag{
+								Name:  "explorer-api",
+								Usage: "Explorer API URL. Optional for GoChain networks, which use `{testnet-}explorer.gochain.io` by default",
+							},
+							cli.StringFlag{
+								Name:  "solc-version, c",
+								Usage: "The version of the solc compiler(a tag of the ethereum/solc docker image)",
+							}, cli.StringFlag{
+								Name:  "evm-version",
+								Usage: "Solidity EVM version",
+								Value: "petersburg",
+							},
+							cli.BoolTFlag{
+								Name:  "optimize",
+								Usage: "Solidity optimization",
+							},
 						*/
 						cli.Uint64Flag{
 							Name:  "gas-limit",
@@ -509,19 +510,15 @@ func main() {
 						cli.Uint64Flag{
 							Name:  "gas-limit",
 							Value: 70000,
-							
 						},
 
-                                		cli.StringFlag{
-                                       		 	Name:  "gas-price",
-                                        		Usage: "Gas price to use, if left blank, will use suggested gas price.",
-                                		},
-                                		cli.StringFlag{
-                                        	Name:  "gas-price-gwei",
-                                        	Usage: "Gas price to use in GWEI, if left blank, will use suggested gas price.",
-	
-							
-							
+						cli.StringFlag{
+							Name:  "gas-price",
+							Usage: "Gas price to use, if left blank, will use suggested gas price.",
+						},
+						cli.StringFlag{
+							Name:  "gas-price-gwei",
+							Usage: "Gas price to use in GWEI, if left blank, will use suggested gas price.",
 						},
 					},
 				},
@@ -634,44 +631,44 @@ func main() {
 			},
 		},
 		/*
-		{
-			Name:    "snapshot",
-			Aliases: []string{"sn"},
-			Usage:   "Clique snapshot",
-			Action: func(c *cli.Context) {
-				GetSnapshot(ctx, network.URL)
-			},
-		},
-		{
-			Name:    "id",
-			Aliases: []string{"id"},
-			Usage:   "Network/Chain information",
-			Action: func(c *cli.Context) {
-				GetID(ctx, network.URL)
-			},
-		},
-		{
-			Name:  "start",
-			Usage: "Start a local GoChain development node",
-			Flags: []cli.Flag{
-				cli.BoolTFlag{
-					Name:  "detach, d",
-					Usage: "Run container in background.",
-				},
-				cli.StringFlag{
-					Name:  "env-file",
-					Usage: "Path to custom configuration file.",
-				},
-				cli.StringFlag{
-					Name:   "private-key,pk",
-					Usage:  "Private key",
-					EnvVar: pkVarName,
+			{
+				Name:    "snapshot",
+				Aliases: []string{"sn"},
+				Usage:   "Clique snapshot",
+				Action: func(c *cli.Context) {
+					GetSnapshot(ctx, network.URL)
 				},
 			},
-			Action: func(c *cli.Context) error {
-				return start(ctx, c)
+			{
+				Name:    "id",
+				Aliases: []string{"id"},
+				Usage:   "Network/Chain information",
+				Action: func(c *cli.Context) {
+					GetID(ctx, network.URL)
+				},
 			},
-		},
+			{
+				Name:  "start",
+				Usage: "Start a local GoChain development node",
+				Flags: []cli.Flag{
+					cli.BoolTFlag{
+						Name:  "detach, d",
+						Usage: "Run container in background.",
+					},
+					cli.StringFlag{
+						Name:  "env-file",
+						Usage: "Path to custom configuration file.",
+					},
+					cli.StringFlag{
+						Name:   "private-key,pk",
+						Usage:  "Private key",
+						EnvVar: pkVarName,
+					},
+				},
+				Action: func(c *cli.Context) error {
+					return start(ctx, c)
+				},
+			},
 		*/
 		{
 			Name:  "myaddress",
@@ -812,273 +809,273 @@ func main() {
 			},
 		},
 		/*
-		{
-			Name:    "generate",
-			Usage:   "Generate a contract",
-			Aliases: []string{"g"},
-			Subcommands: []cli.Command{
-				{
-					Name:  "contract",
-					Usage: "Generate a contract",
-					Subcommands: []cli.Command{
-						{
-							Name:  "erc20",
-							Usage: "Generate an ERC20 contract",
-							Flags: []cli.Flag{
-								// cli.BoolTFlag{
-								// 	Name:  "pausable, p",
-								// 	Usage: "Pausable contract. Default: true",
-								// },
-								// cli.BoolTFlag{
-								// 	Name:  "mintable, m",
-								// 	Usage: "Mintable contract. Default: true",
-								// },
-								// cli.BoolTFlag{
-								// 	Name:  "burnable, b",
-								// 	Usage: "Burnable contract. Default: true",
-								// },
-								cli.StringFlag{
-									Name:     "symbol, s",
-									Usage:    "Token Symbol.",
-									Required: true,
+			{
+				Name:    "generate",
+				Usage:   "Generate a contract",
+				Aliases: []string{"g"},
+				Subcommands: []cli.Command{
+					{
+						Name:  "contract",
+						Usage: "Generate a contract",
+						Subcommands: []cli.Command{
+							{
+								Name:  "erc20",
+								Usage: "Generate an ERC20 contract",
+								Flags: []cli.Flag{
+									// cli.BoolTFlag{
+									// 	Name:  "pausable, p",
+									// 	Usage: "Pausable contract. Default: true",
+									// },
+									// cli.BoolTFlag{
+									// 	Name:  "mintable, m",
+									// 	Usage: "Mintable contract. Default: true",
+									// },
+									// cli.BoolTFlag{
+									// 	Name:  "burnable, b",
+									// 	Usage: "Burnable contract. Default: true",
+									// },
+									cli.StringFlag{
+										Name:     "symbol, s",
+										Usage:    "Token Symbol.",
+										Required: true,
+									},
+									cli.StringFlag{
+										Name:     "name, n",
+										Usage:    "Token Name",
+										Required: true,
+									},
+									// cli.StringFlag{
+									// 	Name:  "capped, c",
+									// 	Usage: "Cap, total supply(in GO/ETH)",
+									// },
+									// cli.IntFlag{
+									// 	Name:  "decimals, d",
+									// 	Usage: "Decimals",
+									// 	Value: 18,
+									// },
 								},
-								cli.StringFlag{
-									Name:     "name, n",
-									Usage:    "Token Name",
-									Required: true,
-								},
-								// cli.StringFlag{
-								// 	Name:  "capped, c",
-								// 	Usage: "Cap, total supply(in GO/ETH)",
-								// },
-								// cli.IntFlag{
-								// 	Name:  "decimals, d",
-								// 	Usage: "Decimals",
-								// 	Value: 18,
-								// },
-							},
-							Action: func(c *cli.Context) {
-								GenerateContract(ctx, "erc20", c)
-							},
-						},
-						{
-							Name:  "erc721",
-							Usage: "Generate an ERC721 contract",
-							Flags: []cli.Flag{
-								// cli.BoolTFlag{
-								// 	Name:  "pausable, p",
-								// 	Usage: "Pausable contract. Default: true",
-								// },
-								// cli.BoolTFlag{
-								// 	Name:  "mintable, m",
-								// 	Usage: "Mintable contract. Default: true",
-								// },
-								// cli.BoolTFlag{
-								// 	Name:  "burnable, b",
-								// 	Usage: "Burnable contract. Default: true",
-								// },
-								cli.StringFlag{
-									Name:     "symbol, s",
-									Usage:    "Token Symbol.",
-									Required: true,
-								},
-								cli.StringFlag{
-									Name:     "name, n",
-									Usage:    "Token Name",
-									Required: true,
-								},
-								cli.StringFlag{
-									Name:     "base-uri",
-									Usage:    "Base URI for fetching token metadata",
-									Required: true,
+								Action: func(c *cli.Context) {
+									GenerateContract(ctx, "erc20", c)
 								},
 							},
-							Action: func(c *cli.Context) {
-								GenerateContract(ctx, "erc721", c)
+							{
+								Name:  "erc721",
+								Usage: "Generate an ERC721 contract",
+								Flags: []cli.Flag{
+									// cli.BoolTFlag{
+									// 	Name:  "pausable, p",
+									// 	Usage: "Pausable contract. Default: true",
+									// },
+									// cli.BoolTFlag{
+									// 	Name:  "mintable, m",
+									// 	Usage: "Mintable contract. Default: true",
+									// },
+									// cli.BoolTFlag{
+									// 	Name:  "burnable, b",
+									// 	Usage: "Burnable contract. Default: true",
+									// },
+									cli.StringFlag{
+										Name:     "symbol, s",
+										Usage:    "Token Symbol.",
+										Required: true,
+									},
+									cli.StringFlag{
+										Name:     "name, n",
+										Usage:    "Token Name",
+										Required: true,
+									},
+									cli.StringFlag{
+										Name:     "base-uri",
+										Usage:    "Base URI for fetching token metadata",
+										Required: true,
+									},
+								},
+								Action: func(c *cli.Context) {
+									GenerateContract(ctx, "erc721", c)
+								},
 							},
 						},
 					},
-				},
-				{
-					Name:  "code",
-					Usage: "Generate code bindings",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:  "abi, a",
-							Usage: "Path to the contract ABI json to bind",
+					{
+						Name:  "code",
+						Usage: "Generate code bindings",
+						Flags: []cli.Flag{
+							cli.StringFlag{
+								Name:  "abi, a",
+								Usage: "Path to the contract ABI json to bind",
+							},
+							cli.StringFlag{
+								Name:  "lang, l",
+								Usage: "Destination language for the bindings (go, java, objc)",
+								Value: "go",
+							},
+							cli.StringFlag{
+								Name:  "pkg, p",
+								Usage: "Package name to generate the binding into.",
+								Value: "main",
+							},
+							cli.StringFlag{
+								Name:  "out, o",
+								Usage: "Output file for the generated binding (default = main.go).",
+								Value: "out.go",
+							},
 						},
-						cli.StringFlag{
-							Name:  "lang, l",
-							Usage: "Destination language for the bindings (go, java, objc)",
-							Value: "go",
+						Action: func(c *cli.Context) {
+							GenerateCode(ctx, c)
 						},
-						cli.StringFlag{
-							Name:  "pkg, p",
-							Usage: "Package name to generate the binding into.",
-							Value: "main",
-						},
-						cli.StringFlag{
-							Name:  "out, o",
-							Usage: "Output file for the generated binding (default = main.go).",
-							Value: "out.go",
-						},
-					},
-					Action: func(c *cli.Context) {
-						GenerateCode(ctx, c)
 					},
 				},
 			},
-		},
-		{
-			Name:  "did",
-			Usage: "Distributed identity operations",
-			Subcommands: []cli.Command{
-				{
-					Name:  "create",
-					Usage: "Create a new DID",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "private-key,pk",
-							Usage:       "Private key",
-							EnvVar:      pkVarName,
-							Destination: &privateKey,
+			{
+				Name:  "did",
+				Usage: "Distributed identity operations",
+				Subcommands: []cli.Command{
+					{
+						Name:  "create",
+						Usage: "Create a new DID",
+						Flags: []cli.Flag{
+							cli.StringFlag{
+								Name:        "private-key,pk",
+								Usage:       "Private key",
+								EnvVar:      pkVarName,
+								Destination: &privateKey,
+							},
+							cli.StringFlag{
+								Name:   "registry",
+								Usage:  "Registry contract address",
+								EnvVar: didRegistryVarName,
+							},
 						},
-						cli.StringFlag{
-							Name:   "registry",
-							Usage:  "Registry contract address",
-							EnvVar: didRegistryVarName,
-						},
-					},
-					Action: func(c *cli.Context) {
-						CreateDID(ctx, network.URL, privateKey, c.Args().First(), c.String("registry"))
-					},
-				},
-				{
-					Name:  "owner",
-					Usage: "Display DID owner address",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "private-key,pk",
-							Usage:       "Private key",
-							EnvVar:      pkVarName,
-							Destination: &privateKey,
-						},
-						cli.StringFlag{
-							Name:   "registry",
-							Usage:  "Registry contract address",
-							EnvVar: didRegistryVarName,
+						Action: func(c *cli.Context) {
+							CreateDID(ctx, network.URL, privateKey, c.Args().First(), c.String("registry"))
 						},
 					},
-					Action: func(c *cli.Context) {
-						DIDOwner(ctx, network.URL, privateKey, c.Args().First(), c.String("registry"))
-					},
-				},
-				{
-					Name:  "hash",
-					Usage: "Display DID document IPFS hash",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "private-key,pk",
-							Usage:       "Private key",
-							EnvVar:      pkVarName,
-							Destination: &privateKey,
+					{
+						Name:  "owner",
+						Usage: "Display DID owner address",
+						Flags: []cli.Flag{
+							cli.StringFlag{
+								Name:        "private-key,pk",
+								Usage:       "Private key",
+								EnvVar:      pkVarName,
+								Destination: &privateKey,
+							},
+							cli.StringFlag{
+								Name:   "registry",
+								Usage:  "Registry contract address",
+								EnvVar: didRegistryVarName,
+							},
 						},
-						cli.StringFlag{
-							Name:   "registry",
-							Usage:  "Registry contract address",
-							EnvVar: didRegistryVarName,
-						},
-					},
-					Action: func(c *cli.Context) {
-						DIDHash(ctx, network.URL, privateKey, c.Args().First(), c.String("registry"))
-					},
-				},
-				{
-					Name:  "show",
-					Usage: "Display DID document",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "private-key,pk",
-							Usage:       "Private key",
-							EnvVar:      pkVarName,
-							Destination: &privateKey,
-						},
-						cli.StringFlag{
-							Name:   "registry",
-							Usage:  "Registry contract address",
-							EnvVar: didRegistryVarName,
+						Action: func(c *cli.Context) {
+							DIDOwner(ctx, network.URL, privateKey, c.Args().First(), c.String("registry"))
 						},
 					},
-					Action: func(c *cli.Context) {
-						ShowDID(ctx, network.URL, privateKey, c.Args().First(), c.String("registry"))
+					{
+						Name:  "hash",
+						Usage: "Display DID document IPFS hash",
+						Flags: []cli.Flag{
+							cli.StringFlag{
+								Name:        "private-key,pk",
+								Usage:       "Private key",
+								EnvVar:      pkVarName,
+								Destination: &privateKey,
+							},
+							cli.StringFlag{
+								Name:   "registry",
+								Usage:  "Registry contract address",
+								EnvVar: didRegistryVarName,
+							},
+						},
+						Action: func(c *cli.Context) {
+							DIDHash(ctx, network.URL, privateKey, c.Args().First(), c.String("registry"))
+						},
+					},
+					{
+						Name:  "show",
+						Usage: "Display DID document",
+						Flags: []cli.Flag{
+							cli.StringFlag{
+								Name:        "private-key,pk",
+								Usage:       "Private key",
+								EnvVar:      pkVarName,
+								Destination: &privateKey,
+							},
+							cli.StringFlag{
+								Name:   "registry",
+								Usage:  "Registry contract address",
+								EnvVar: didRegistryVarName,
+							},
+						},
+						Action: func(c *cli.Context) {
+							ShowDID(ctx, network.URL, privateKey, c.Args().First(), c.String("registry"))
+						},
 					},
 				},
 			},
-		},
 		*/
 
 		/*
-		{
-			Name:  "claim",
-			Usage: "Verifiable claims operations",
-			Subcommands: []cli.Command{
-				{
-					Name:  "sign",
-					Usage: "Sign a verifiable claim",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "private-key,pk",
-							Usage:       "Private key",
-							EnvVar:      pkVarName,
-							Destination: &privateKey,
+			{
+				Name:  "claim",
+				Usage: "Verifiable claims operations",
+				Subcommands: []cli.Command{
+					{
+						Name:  "sign",
+						Usage: "Sign a verifiable claim",
+						Flags: []cli.Flag{
+							cli.StringFlag{
+								Name:        "private-key,pk",
+								Usage:       "Private key",
+								EnvVar:      pkVarName,
+								Destination: &privateKey,
+							},
+							cli.StringFlag{
+								Name:  "id",
+								Usage: "Credential ID",
+							},
+							cli.StringFlag{
+								Name:  "type",
+								Usage: "Credential type",
+							},
+							cli.StringFlag{
+								Name:  "issuer",
+								Usage: "Credential issuer DID",
+							},
+							cli.StringFlag{
+								Name:  "subject",
+								Usage: "Credential subject DID",
+							},
+							cli.StringFlag{
+								Name:  "data",
+								Usage: "Credential subject JSON object",
+							},
 						},
-						cli.StringFlag{
-							Name:  "id",
-							Usage: "Credential ID",
-						},
-						cli.StringFlag{
-							Name:  "type",
-							Usage: "Credential type",
-						},
-						cli.StringFlag{
-							Name:  "issuer",
-							Usage: "Credential issuer DID",
-						},
-						cli.StringFlag{
-							Name:  "subject",
-							Usage: "Credential subject DID",
-						},
-						cli.StringFlag{
-							Name:  "data",
-							Usage: "Credential subject JSON object",
-						},
-					},
-					Action: func(c *cli.Context) {
-						SignClaim(ctx, network.URL, privateKey, c.String("id"), c.String("type"), c.String("issuer"), c.String("subject"), c.String("data"))
-					},
-				},
-				{
-					Name:  "verify",
-					Usage: "Verify a signed claim",
-					Flags: []cli.Flag{
-						cli.StringFlag{
-							Name:        "private-key,pk",
-							Usage:       "Private key",
-							EnvVar:      pkVarName,
-							Destination: &privateKey,
-						},
-						cli.StringFlag{
-							Name:   "registry",
-							Usage:  "Registry contract address",
-							EnvVar: didRegistryVarName,
+						Action: func(c *cli.Context) {
+							SignClaim(ctx, network.URL, privateKey, c.String("id"), c.String("type"), c.String("issuer"), c.String("subject"), c.String("data"))
 						},
 					},
-					Action: func(c *cli.Context) {
-						VerifyClaim(ctx, network.URL, privateKey, c.String("registry"), c.Args().First())
+					{
+						Name:  "verify",
+						Usage: "Verify a signed claim",
+						Flags: []cli.Flag{
+							cli.StringFlag{
+								Name:        "private-key,pk",
+								Usage:       "Private key",
+								EnvVar:      pkVarName,
+								Destination: &privateKey,
+							},
+							cli.StringFlag{
+								Name:   "registry",
+								Usage:  "Registry contract address",
+								EnvVar: didRegistryVarName,
+							},
+						},
+						Action: func(c *cli.Context) {
+							VerifyClaim(ctx, network.URL, privateKey, c.String("registry"), c.Args().First())
+						},
 					},
 				},
 			},
-		},
 		*/
 	}
 	err := app.Run(os.Args)
@@ -1221,7 +1218,7 @@ func GetBlockDetails(ctx context.Context, network web3.Network, numberOrHash str
 	fmt.Println("TxHash:", block.TxsRoot.String())
 	fmt.Println("ReceiptHash:", block.ReceiptsRoot.String())
 	fmt.Println("Bloom:", "0x"+common.Bytes2Hex(block.LogsBloom.Bytes()))
-//	fmt.Println("MixDigest:", block.MixHash.String())
+	//	fmt.Println("MixDigest:", block.MixHash.String())
 	if len(block.Signers) > 0 {
 		fmt.Println("Signers:", fmtAddresses(block.Signers).String())
 	}
