@@ -1,4 +1,4 @@
-Simple command line tool for interacting with the Metaverse VM
+Simple command line tool for interacting with the Metaverse VM. Its currently based on the unlicensed Gochain Web3 CLI. Its current status is experimental. It should only be distributed for internal purposes until the go web3 is unlicensed.  
 
 ```sh
 NAME:
@@ -19,7 +19,7 @@ COMMANDS:
    contract, c      Contract operations
    myaddress        Returns the address associated with MVS_PRIVATE_KEY
    account, a       Account operations
-   transfer, send   Transfer ETP or MST tokens to another account. eg: `web3 transfer 10.1 to 0xADDRESS`
+   transfer, send   Transfer ETP or MST tokens to another account. eg: `mvs-vm-cli transfer 10.1 to 0xADDRESS`
    env              List environment variables
    help, h          Shows a list of commands or help for one command
 
@@ -37,66 +37,71 @@ GLOBAL OPTIONS:
 
 If you just plan to read from the blockchain, you do not need any ETP and you do not need to set your `MVS_PRIVATE_KEY`. If you plan to deploy contracts or write anything to the blockchain, you'll need ETP and you'll need to set your `MVS_PRIVATE_KEY` for the account that has those tokens.
 
-### Pick a network to use
+### Network selection (Optional)
+#### a) Connect to a local node (default)
 
-#### a) Run a local node
-
-This option is the default.
-
-#### b) Hyperspace mainnet
+This option is the default. It will try to connect to a local node on http://localhost:9933 which is the default of a locally running fullnode. 
+#### b) Use Hyperspace mainnet explorer RPC
 
 Set the environment variable
 
 ```sh
+# To use the mainnet
 export MVS_NETWORK=hyperspace
+# OR
+export MVS_RPC_URL=https://vm.mvs.org/mainnet_rpc/
 ```
 
 Or add the parameter --network hyperspace to your mvs-vm-cli command
 
-#### c) Use the Andromeda testnet
+#### c) Use Hyperspace testnet explorer RPC
 
 ```sh
+# To use the mainnet
 export MVS_NETWORK=testnet
+# OR
+export MVS_RPC_URL=https://vm.mvs.org/testnet_rpc/
 ```
 
-### Set Private Key (optional)
-
-Required if you plan to deploy or write transactions.
+#### d) Define custom url
 
 ```sh
+export MVS_RPC_URL=http://IP_ADDRESS:PORT
+```
+
+### Set Private Key Environment (optional)
+
+Required if you plan to deploy contracts or sign transactions.
+
+```sh
+# set environment variable 
 export MVS_PRIVATE_KEY=0x...
 ```
 
-#### Setting your private key
-
-Set your private key in the environment so it can be used in all the commands below:
-
-```sh
-export MVS_PRIVATE_KEY=0xKEY
-```
+### 
 
 ### Check balance
 
 ```sh
-web3 balance
+mvs-vm-cli balance
 ```
 
-### Transfer tokens
+### Transfer ETP
 
 ```sh
-web3 transfer 0.1 to 0x67683dd2a499E765BCBE0035439345f48996892f
+mvs-vm-cli transfer 0.1 to 0x67683dd2a499E765BCBE0035439345f48996892f
 ```
 
 ### Get transaction details
 
 ```sh
-web3 tx TX_HASH
+mvs-vm-cli tx TX_HASH
 ```
 
 ### Show information about a block
 
 ```sh
-web3 block BLOCK_ID
+mvs-vm-cli block BLOCK_ID
 ```
 
 **Parameters:**
@@ -106,7 +111,7 @@ web3 block BLOCK_ID
 ### Show information about an address
 
 ```sj
-web3 transaction ADDRESS_HASH
+mvs-vm-cli transaction ADDRESS_HASH
 ```
 
 **Parameters:**
