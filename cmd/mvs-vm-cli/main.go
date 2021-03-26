@@ -1335,13 +1335,13 @@ func GetAddressDetails(ctx context.Context, network web3.Network, addrHash, priv
 	}
 
 	if contractAddress != "" {
-		decimals, err := GetContractConst(ctx, network.URL, contractAddress, "MST", "decimals")
+		decimals, err := GetContractConst(ctx, network.URL, contractAddress, "erc20", "decimals")
 		if err != nil {
 			fatalExit(err)
 		}
 		// fmt.Println("DECIMALS:", decimals, reflect.TypeOf(decimals))
 		// todo: could get symbol here to display
-		balance, err := GetContractConst(ctx, network.URL, contractAddress, "MST", "balanceOf", addrHash)
+		balance, err := GetContractConst(ctx, network.URL, contractAddress, "erc20", "balanceOf", addrHash)
 		if err != nil {
 			fatalExit(err)
 		}
