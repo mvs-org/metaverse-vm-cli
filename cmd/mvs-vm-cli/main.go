@@ -77,7 +77,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "network, n",
-			Usage:       `The name of the network. Options: hyperspace/testnet/localhost. (default: "hyperspace")`,
+			Usage:       `The name of the network. Options: hyperspace/testnet/localhost. (default: "localhost")`,
 			Destination: &netName,
 			EnvVar:      networkVarName,
 			Hidden:      false},
@@ -1120,7 +1120,7 @@ func getNetwork(name, rpcURL string, testnet bool) web3.Network {
 			}
 			name = "testnet"
 		} else if name == "" {
-			name = "hyperspace"
+			name = "localhost"
 		}
 		var ok bool
 		network, ok = web3.Networks[name]

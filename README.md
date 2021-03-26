@@ -16,6 +16,7 @@ COMMANDS:
    receipt, rc      Transaction receipt for a tx hash
    address, addr    Account details for a specific address, or the one corresponding to the private key.
    balance          Get balance for your private key or an address passed in. eg: `balance 0xABC123`
+   contract, c      Contract operations
    myaddress        Returns the address associated with MVS_PRIVATE_KEY
    account, a       Account operations
    transfer, send   Transfer ETP or MST tokens to another account. eg: `web3 transfer 10.1 to 0xADDRESS`
@@ -23,7 +24,7 @@ COMMANDS:
    help, h          Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --network value, -n value  The name of the network. Options: hyperspace/testnet/localhost. (default: "hyperspace") [$MVS_NETWORK]
+   --network value, -n value  The name of the network. Options: hyperspace/testnet/localhost. (default: "localhost") [$MVS_NETWORK]
    --testnet                  Shorthand for '-network testnet'.
    --rpc-url value            The network RPC URL [$MVS_RPC_URL]
    --verbose                  Enable verbose logging
@@ -38,20 +39,24 @@ If you just plan to read from the blockchain, you do not need any ETP and you do
 
 ### Pick a network to use
 
-#### a) Hyperspace mainnet
+#### a) Run a local node
 
-By default the cli will connect to the hyperspace mainnet.
+This option is the default.
 
-#### b) Use the Andromeda testnet
+#### b) Hyperspace mainnet
+
+Set the environment variable
+
+```sh
+export MVS_NETWORK=hyperspace
+```
+
+Or add the parameter --network hyperspace to your mvs-vm-cli command
+
+#### c) Use the Andromeda testnet
 
 ```sh
 export MVS_NETWORK=testnet
-```
-
-#### c) Run a local node
-
-```sh
-export MVS_NETWORK=localhost
 ```
 
 ### Set Private Key (optional)
