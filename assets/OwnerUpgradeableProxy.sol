@@ -7,7 +7,7 @@ import "./UpgradeableProxy.sol";
  * owner to upgrade and pause the proxy.
  */
 contract OwnerUpgradeableProxy is UpgradeableProxy {
-  bytes32 private constant ownerPosition = keccak256("gochain.proxy.owner");
+  bytes32 private constant ownerPosition = keccak256("mvs.proxy.owner");
 
   /*
    * Initializes the proxy and sets the owner.

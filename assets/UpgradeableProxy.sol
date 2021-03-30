@@ -12,8 +12,8 @@ contract UpgradeableProxy {
   event Paused();
   event Resumed();
 
-  bytes32 private constant targetPosition = keccak256("gochain.proxy.target");
-  bytes32 private constant pausedPosition = keccak256("gochain.proxy.paused");
+  bytes32 private constant targetPosition = keccak256("mvs.proxy.target");
+  bytes32 private constant pausedPosition = keccak256("mvs.proxy.paused");
 
   /*
    * Initializes the starting target contract address. The placeholder 

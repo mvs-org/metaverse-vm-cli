@@ -1,4 +1,4 @@
-Simple command line tool for interacting with the Metaverse VM. Its currently based on the unlicensed Gochain Web3 CLI. Its current status is experimental. It should only be distributed for internal purposes until the go web3 is unlicensed.  
+Simple command line tool for interacting with the Metaverse VM.
 
 ```sh
 NAME:

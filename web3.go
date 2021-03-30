@@ -26,15 +26,15 @@ import (
 var NotFoundErr = errors.New("not found")
 
 var (
-	weiPerGO   = big.NewInt(1e18)
+	weiPerETP  = big.NewInt(1e18)
 	weiPerGwei = big.NewInt(1e9)
-	weiPerSat = big.NewInt(1e10)
+	weiPerSat  = big.NewInt(1e10)
 )
 
 // Base converts b base units to wei (*1e18).
 func Base(b int64) *big.Int {
 	i := big.NewInt(b)
-	return i.Mul(i, weiPerGO)
+	return i.Mul(i, weiPerETP)
 }
 
 // Gwei converts g gwei to wei (*1e9).
@@ -45,7 +45,7 @@ func Gwei(g int64) *big.Int {
 
 // WeiAsBase converts w wei in to the base unit, and formats it as a decimal fraction with full precision (up to 18 decimals).
 func WeiAsBase(w *big.Int) string {
-	return new(big.Rat).SetFrac(w, weiPerGO).FloatString(18)
+	return new(big.Rat).SetFrac(w, weiPerETP).FloatString(18)
 }
 
 // WeiAsGwei converts w wei in to gwei, and formats it as a decimal fraction with full precision (up to 9 decimals).
@@ -57,7 +57,7 @@ func WeiAsSats(w *big.Int) string {
 	return new(big.Rat).SetFrac(w, weiPerSat).FloatString(10)
 }
 
-// IntAsFloat converts a *big.Int (ie: wei), to *big.Float (ie: ETH)
+// IntAsFloat converts a *big.Int (ie: wei), to *big.Float (ie: ETP)
 func IntAsFloat(i *big.Int, decimals int) *big.Float {
 	f := new(big.Float)
 	f.SetPrec(100)
@@ -635,7 +635,7 @@ func ParseLogs(myabi abi.ABI, logs []*types.Log) ([]Event, error) {
 	return output, nil
 }
 
-// ParseAmount parses a string (human readable amount with units ie 1go, 1nanogo...) and returns big.Int value of this string in wei/atto
+// ParseAmount parses a string (human readable amount with units ie 1sats...) and returns big.Int value of this string in wei/atto
 func ParseAmount(amount string) (*big.Int, error) {
 	var ret = new(big.Int)
 	var mul = big.NewInt(1)
@@ -644,6 +644,12 @@ func ParseAmount(amount string) (*big.Int, error) {
 	case strings.HasSuffix(amount, "nanogo"):
 		amount = strings.TrimSuffix(amount, "nanogo")
 		mul = weiPerGwei
+	case strings.HasSuffix(amount, "sat"):
+		amount = strings.TrimSuffix(amount, "sat")
+		mul = weiPerSat
+	case strings.HasSuffix(amount, "sats"):
+		amount = strings.TrimSuffix(amount, "sats")
+		mul = weiPerSat
 	case strings.HasSuffix(amount, "gwei"):
 		amount = strings.TrimSuffix(amount, "gwei")
 		mul = weiPerGwei
@@ -653,10 +659,10 @@ func ParseAmount(amount string) (*big.Int, error) {
 		amount = strings.TrimSuffix(amount, "wei")
 	case strings.HasSuffix(amount, "eth"):
 		amount = strings.TrimSuffix(amount, "eth")
-		mul = weiPerGO
+		mul = weiPerETP
 	default:
-		amount = strings.TrimSuffix(amount, "go")
-		mul = weiPerGO
+		amount = strings.TrimSuffix(amount, "etp")
+		mul = weiPerETP
 	}
 	val, err := ParseBigInt(amount)
 	if err != nil {
@@ -681,8 +687,12 @@ func ParseGwei(g string) (*big.Int, error) {
 	return parseUnit(g, weiPerGwei, 9)
 }
 
+func ParseSat(s string) (*big.Int, error) {
+	return parseUnit(s, weiPerSat, 10)
+}
+
 func ParseBase(b string) (*big.Int, error) {
-	return parseUnit(b, weiPerGO, 18)
+	return parseUnit(b, weiPerETP, 18)
 }
 
 func parseUnit(g string, mult *big.Int, digits int) (*big.Int, error) {
