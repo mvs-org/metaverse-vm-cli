@@ -66,9 +66,9 @@ func main() {
 	// Flags
 	var netName, rpcUrl, 	contractAddress,contractFile, privateKey, txFormat, txInputFormat string
 	
-	//var function, toContractAddress string
+	var function, toContractAddress string
 	var testnet, waitForReceipt bool
-	//var upgradeable bool
+	var upgradeable bool
 
 	app := cli.NewApp()
 	app.Name = "mvs-vm-cli"
@@ -308,11 +308,13 @@ func main() {
 				ReplaceTx(ctx, privateKey, network, c.Uint64("nonce"), to, amount, price, limit, dataB)
 			},
 		},
+		*/
 		{
 			Name:    "contract",
 			Aliases: []string{"c"},
 			Usage:   "Contract operations",
 			Subcommands: []cli.Command{
+				/*
 				{
 					Name:  "flatten",
 					Usage: "Make the specified contract flat",
@@ -326,6 +328,7 @@ func main() {
 						FlattenSol(ctx, c.Args().First(), c.String("output"))
 					},
 				},
+				*/
 				{
 					Name:  "build",
 					Usage: "Build the specified contract",
@@ -375,6 +378,7 @@ func main() {
 							EnvVar:      pkVarName,
 							Destination: &privateKey,
 							Hidden:      false},
+							/*
 						cli.BoolFlag{
 							Name:        "upgradeable",
 							Usage:       "Allow contract to be upgraded",
@@ -400,6 +404,7 @@ func main() {
 							Name:  "optimize",
 							Usage: "Solidity optimization",
 						},
+						*/
 						cli.Uint64Flag{
 							Name:  "gas-limit",
 							Value: 4000000,
@@ -628,6 +633,7 @@ func main() {
 				},
 			},
 		},
+		/*
 		{
 			Name:    "snapshot",
 			Aliases: []string{"sn"},
@@ -636,7 +642,6 @@ func main() {
 				GetSnapshot(ctx, network.URL)
 			},
 		},
-		/*
 		{
 			Name:    "id",
 			Aliases: []string{"id"},
@@ -1297,12 +1302,12 @@ func GetTransactionDetails(ctx context.Context, network web3.Network, txhash, in
 	fmt.Println("Nonce:", uint64(tx.Nonce))
 	fmt.Println("Gas Limit:", tx.GasLimit)
 	fmt.Println("Gas Prices:", web3.WeiAsSats(tx.GasPrice), "sats")
-	if tx.BlockHash == (common.Hash{}) {
-		fmt.Println("Pending: true")
-	} else {
+	// if tx.BlockHash == (common.Hash{}) {
+	// 	fmt.Println("Pending: true")
+	// } else {
 		fmt.Println("Block Number:", tx.BlockNumber)
 		fmt.Println("Block Hash:", tx.BlockHash.String())
-	}
+	// }
 	printInputData(tx.Input, inputFormat)
 	fmt.Println()
 }
